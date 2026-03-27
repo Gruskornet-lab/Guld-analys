@@ -1,0 +1,33 @@
+# Miljövariabler — lägg ALDRIG API-nycklar i koden
+.env
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtuell miljö
+venv/
+env/
+.venv/
+
+# Rapporter sparas lokalt, behöver inte vara i GitHub
+# (ta bort dessa rader om du vill spara rapporter i GitHub)
+reports/*.txt
+
+# Testdata — demo-CSV behövs inte i produktion
+data/gold_weekly_demo.csv
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
