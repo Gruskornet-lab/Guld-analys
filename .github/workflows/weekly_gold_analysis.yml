@@ -1,28 +1,38 @@
 name: Weekly Gold Analysis
-
+ 
 on:
   schedule:
-    - cron: "30 6 * * 1"
+    # GitHub Actions kör alltid i UTC.
+    # Sverige byter mellan CET (UTC+1) vintertid och CEST (UTC+2) sommartid.
+    #
+    # Mål: Rapporten ska skickas kl 07:30 svensk tid året runt.
+    #
+    # Vintertid (okt–mar):  07:30 CET  = 06:30 UTC  → cron: "30 6 * * 1"
+    # Sommartid (mar–okt):  07:30 CEST = 05:30 UTC  → cron: "30 5 * * 1"
+    #
+    # Sommartid 2026: 29 mars – 25 oktober
+    # Vi använder 05:30 UTC nu eftersom det är sommartid.
+    - cron: "30 5 * * 1"
   workflow_dispatch:
-
+ 
 jobs:
   run-analysis:
     name: Run Gold Technical Analysis
     runs-on: ubuntu-latest
-
+ 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+ 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: "pip"
-
+ 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
+ 
       - name: Run gold analysis
         env:
           ANTHROPIC_API_KEY:   ${{ secrets.ANTHROPIC_API_KEY }}
@@ -30,7 +40,7 @@ jobs:
           TELEGRAM_CHAT_ID:    ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_CHAT_ID_2:  ${{ secrets.TELEGRAM_CHAT_ID_2 }}
         run: python main.py
-
+ 
       - name: Upload report as artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -38,3 +48,4 @@ jobs:
           name: gold-analysis-report-${{ github.run_id }}
           path: reports/
           retention-days: 30
+ 
